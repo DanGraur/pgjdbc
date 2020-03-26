@@ -1523,7 +1523,7 @@ public class PgResultSet implements ResultSet, org.postgresql.PGRefCursorResultS
     // Contains the primary key?
     //
 
-    primaryKeys = new @GenericTType("org.postgresql.jdbc.PrimaryKey") ArrayList<>();
+    primaryKeys = new ArrayList<>();
 
     // this is not strictly jdbc spec, but it will make things much faster if used
     // the user has to select oid, * from table and then we will just use oid

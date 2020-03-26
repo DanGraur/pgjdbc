@@ -43,7 +43,6 @@ import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
 import org.postgresql.util.PSQLWarning;
 import org.postgresql.util.ServerErrorMessage;
-import tanno.GenericTType;
 
 import java.io.IOException;
 import java.lang.ref.PhantomReference;
@@ -148,7 +147,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   private final CommandCompleteParser commandCompleteParser = new CommandCompleteParser();
 
   public QueryExecutorImpl(PGStream pgStream, String user, String database,
-      int cancelSignalTimeout, Properties info) throws SQLException, IOException {
+                           int cancelSignalTimeout, Properties info) throws SQLException, IOException {
     super(pgStream, user, database, cancelSignalTimeout, info);
 
     this.allowEncodingChanges = PGProperty.ALLOW_ENCODING_CHANGES.getBoolean(info);
@@ -294,7 +293,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   }
 
   public synchronized void execute(Query query, ParameterList parameters, ResultHandler handler,
-      int maxRows, int fetchSize, int flags) throws SQLException {
+                                   int maxRows, int fetchSize, int flags) throws SQLException {
     waitOnLock();
     if (LOGGER.isLoggable(Level.FINEST)) {
       LOGGER.log(Level.FINEST, "  simple execute, handler={0}, maxRows={1}, fetchSize={2}, flags={3}",
@@ -479,7 +478,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   private static final int NODATA_QUERY_RESPONSE_SIZE_BYTES = 250;
 
   public synchronized void execute(Query[] queries, ParameterList[] parameterLists,
-      BatchResultHandler batchHandler, int maxRows, int fetchSize, int flags) throws SQLException {
+                                   BatchResultHandler batchHandler, int maxRows, int fetchSize, int flags) throws SQLException {
     waitOnLock();
     if (LOGGER.isLoggable(Level.FINEST)) {
       LOGGER.log(Level.FINEST, "  batch execute {0} queries, handler={1}, maxRows={2}, fetchSize={3}, flags={4}",
@@ -576,7 +575,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
       private boolean sawBegin = false;
 
       public void handleResultRows(Query fromQuery, Field[] fields, List<Tuple> tuples,
-          ResultCursor cursor) {
+                                   ResultCursor cursor) {
         if (sawBegin) {
           super.handleResultRows(fromQuery, fields, tuples, cursor);
         }
@@ -653,8 +652,8 @@ public class QueryExecutorImpl extends QueryExecutorBase {
       try {
         /* Send BEGIN with simple protocol preferred */
         int beginFlags = QueryExecutor.QUERY_NO_METADATA
-                         | QueryExecutor.QUERY_ONESHOT
-                         | QueryExecutor.QUERY_EXECUTE_AS_SIMPLE;
+            | QueryExecutor.QUERY_ONESHOT
+            | QueryExecutor.QUERY_EXECUTE_AS_SIMPLE;
         beginFlags = updateQueryMode(beginFlags);
         sendOneQuery(beginTransactionQuery, SimpleQuery.NO_PARAMETERS, 0, 0, beginFlags);
         sendSync();
@@ -746,7 +745,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
         oldTimeout = pgStream.getSocket().getSoTimeout();
       } catch (SocketException e) {
         throw new PSQLException(GT.tr("An error occurred while trying to get the socket "
-          + "timeout."), PSQLState.CONNECTION_FAILURE, e);
+            + "timeout."), PSQLState.CONNECTION_FAILURE, e);
       }
     }
 
@@ -804,7 +803,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
       }
     } catch (IOException e) {
       throw new PSQLException(GT.tr("An error occurred while trying to reset the socket timeout."),
-        PSQLState.CONNECTION_FAILURE, e);
+          PSQLState.CONNECTION_FAILURE, e);
     }
   }
 
@@ -1139,14 +1138,14 @@ public class QueryExecutorImpl extends QueryExecutorBase {
       throws SQLException, IOException {
 
     /*
-    * fixes issue #1592 where one thread closes the stream and another is reading it
+     * fixes issue #1592 where one thread closes the stream and another is reading it
      */
     if (pgStream.isClosed()) {
       throw new PSQLException(GT.tr("PGStream is closed",
-        op.getClass().getName()), PSQLState.CONNECTION_DOES_NOT_EXIST);
+          op.getClass().getName()), PSQLState.CONNECTION_DOES_NOT_EXIST);
     }
     /*
-    *  This is a hack as we should not end up here, but sometimes do with large copy operations.
+     *  This is a hack as we should not end up here, but sometimes do with large copy operations.
      */
     if ( processingCopyResults.compareAndSet(false,true) == false ) {
       LOGGER.log(Level.INFO, "Ignoring request to process copy results, already processing");
@@ -1372,9 +1371,9 @@ public class QueryExecutorImpl extends QueryExecutorBase {
    * See the comments above MAX_BUFFERED_RECV_BYTES's declaration for details.
    */
   private void flushIfDeadlockRisk(Query query, boolean disallowBatching,
-      ResultHandler resultHandler,
-      BatchResultHandler batchHandler,
-      final int flags) throws IOException {
+                                   ResultHandler resultHandler,
+                                   BatchResultHandler batchHandler,
+                                   final int flags) throws IOException {
     // Assume all statements need at least this much reply buffer space,
     // plus params
     estimatedReceiveBufferBytes += NODATA_QUERY_RESPONSE_SIZE_BYTES;
@@ -1421,8 +1420,8 @@ public class QueryExecutorImpl extends QueryExecutorBase {
    * Send a query to the backend.
    */
   private void sendQuery(Query query, V3ParameterList parameters, int maxRows, int fetchSize,
-      int flags, ResultHandler resultHandler,
-      BatchResultHandler batchHandler) throws IOException, SQLException {
+                         int flags, ResultHandler resultHandler,
+                         BatchResultHandler batchHandler) throws IOException, SQLException {
     // Now the query itself.
     Query[] subqueries = query.getSubqueries();
     SimpleParameterList[] subparams = parameters.getSubparams();
@@ -1560,7 +1559,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   }
 
   private void sendBind(SimpleQuery query, SimpleParameterList params, Portal portal,
-      boolean noBinaryTransfer) throws IOException {
+                        boolean noBinaryTransfer) throws IOException {
     //
     // Send Bind.
     //
@@ -1728,7 +1727,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   }
 
   private void sendDescribeStatement(SimpleQuery query, SimpleParameterList params,
-      boolean describeOnly) throws IOException {
+                                     boolean describeOnly) throws IOException {
     // Send Statement Describe
 
     LOGGER.log(Level.FINEST, " FE=> Describe(statement={0})", query.getStatementName());
@@ -1829,7 +1828,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
   // Sync (sent by caller)
   //
   private void sendOneQuery(SimpleQuery query, SimpleParameterList params, int maxRows,
-      int fetchSize, int flags) throws IOException {
+                            int fetchSize, int flags) throws IOException {
     boolean asSimple = (flags & QueryExecutor.QUERY_EXECUTE_AS_SIMPLE) != 0;
     if (asSimple) {
       assert (flags & QueryExecutor.QUERY_DESCRIBE_ONLY) == 0
@@ -2101,7 +2100,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
           //
           if ((origStatementName == null && query.getStatementName() == null)
               || (origStatementName != null
-                  && origStatementName.equals(query.getStatementName()))) {
+              && origStatementName.equals(query.getStatementName()))) {
             query.setPrepareTypes(params.getTypeOIDs());
           }
 
@@ -2140,7 +2139,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
             Field[] fields = currentQuery.getFields();
 
             if (fields != null) { // There was a resultset.
-              tuples = new @GenericTType("org.postgresql.core.Tuple") ArrayList<>();
+              tuples = new ArrayList<Tuple>();
               handler.handleResultRows(currentQuery, fields, tuples, null);
               tuples = null;
             }
@@ -2162,7 +2161,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
           if (fields != null && tuples == null) {
             // When no results expected, pretend an empty resultset was returned
             // Not sure if new ArrayList can be always replaced with emptyList
-            tuples = noResults ? Collections.<Tuple>emptyList() : new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
+            tuples = noResults ? Collections.<Tuple>emptyList() : new ArrayList<Tuple>();
           }
 
           handler.handleResultRows(currentQuery, fields, tuples, currentPortal);
@@ -2241,7 +2240,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
           if (fields != null && tuples == null) {
             // When no results expected, pretend an empty resultset was returned
             // Not sure if new ArrayList can be always replaced with emptyList
-            tuples = noResults ? Collections.<Tuple>emptyList() : new @GenericTType("org.postgresql.core.Tuple") ArrayList<>();
+            tuples = noResults ? Collections.<Tuple>emptyList() : new ArrayList<Tuple>();
           }
 
           // If we received tuples we must know the structure of the
@@ -2292,7 +2291,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
           }
           if (!noResults) {
             if (tuples == null) {
-              tuples = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
+              tuples = new ArrayList<Tuple>();
             }
             tuples.add(tuple);
           }
@@ -2356,7 +2355,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
 
         case 'T': // Row Description (response to Describe)
           Field[] fields = receiveFields();
-          tuples = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
+          tuples = new ArrayList<Tuple>();
 
           SimpleQuery query = pendingDescribePortalQueue.peekFirst();
           if (!pendingExecuteQueue.isEmpty() && !pendingExecuteQueue.peekFirst().asSimple) {
@@ -2491,7 +2490,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
     handler = new ResultHandlerDelegate(delegateHandler) {
       @Override
       public void handleCommandStatus(String status, long updateCount, long insertOID) {
-        handleResultRows(portal.getQuery(), null, new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>(), null);
+        handleResultRows(portal.getQuery(), null, new ArrayList<Tuple>(), null);
       }
     };
 
@@ -2608,7 +2607,6 @@ public class QueryExecutorImpl extends QueryExecutorBase {
 
     LOGGER.log(Level.FINEST, " <=BE CommandStatus({0})", status);
 
-    System.out.println("Here before the crash: " + status + " " + status.getClass().getName());
     return status;
   }
 
