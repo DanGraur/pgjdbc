@@ -20,6 +20,7 @@ import org.postgresql.core.Tuple;
 import org.postgresql.util.GT;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
+import tanno.GenericTType;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -1185,7 +1186,7 @@ public class PgStatement implements Statement, BaseStatement {
     synchronized (this) {
       checkClosed();
       if (generatedKeys == null || generatedKeys.getResultSet() == null) {
-        return createDriverResultSet(new Field[0], new ArrayList<Tuple>());
+        return createDriverResultSet(new Field[0], new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>());
       }
 
       return generatedKeys.getResultSet();

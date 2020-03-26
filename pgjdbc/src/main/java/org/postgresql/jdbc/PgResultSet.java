@@ -26,6 +26,7 @@ import org.postgresql.util.PGobject;
 import org.postgresql.util.PGtokenizer;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
+import tanno.GenericTType;
 
 import java.io.ByteArrayInputStream;
 import java.io.CharArrayReader;
@@ -1522,7 +1523,7 @@ public class PgResultSet implements ResultSet, org.postgresql.PGRefCursorResultS
     // Contains the primary key?
     //
 
-    primaryKeys = new ArrayList<PrimaryKey>();
+    primaryKeys = new @GenericTType("org.postgresql.jdbc.PrimaryKey") ArrayList<>();
 
     // this is not strictly jdbc spec, but it will make things much faster if used
     // the user has to select oid, * from table and then we will just use oid

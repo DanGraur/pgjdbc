@@ -15,6 +15,7 @@ import org.postgresql.core.v3.BatchedQuery;
 import org.postgresql.util.GT;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
+import tanno.GenericTType;
 
 import java.sql.BatchUpdateException;
 import java.sql.ResultSet;
@@ -67,7 +68,7 @@ public class BatchResultHandler extends ResultHandlerBase {
         // If SELECT, the resulting ResultSet is not valid
         // Thus it is up to handleCommandStatus to decide if resultSet is good enough
         latestGeneratedKeysRs = (PgResultSet) pgStatement.createResultSet(fromQuery, fields,
-            new ArrayList<Tuple>(), cursor);
+            new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>(), cursor);
       } catch (SQLException e) {
         handleError(e);
       }

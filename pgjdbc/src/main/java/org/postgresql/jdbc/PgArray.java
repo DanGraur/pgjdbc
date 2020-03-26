@@ -17,6 +17,7 @@ import org.postgresql.util.ByteConverter;
 import org.postgresql.util.GT;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
+import tanno.GenericTType;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -286,7 +287,7 @@ public class PgArray implements java.sql.Array {
     if (count > 0 && dimensions > 0) {
       dims[0] = Math.min(count, dims[0]);
     }
-    List<Tuple> rows = new ArrayList<Tuple>();
+    List<Tuple> rows = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
     Field[] fields = new Field[2];
 
     storeValues(rows, fields, elementOid, dims, pos, 0, index);
@@ -431,7 +432,7 @@ public class PgArray implements java.sql.Array {
       boolean insideString = false;
       boolean wasInsideString = false; // needed for checking if NULL
       // value occurred
-      List<PgArrayList> dims = new ArrayList<PgArrayList>(); // array dimension arrays
+      List<PgArrayList> dims = new @GenericTType(value = "org.postgresql.jdbc.PgArrayList") ArrayList<PgArrayList>(); // array dimension arrays
       PgArrayList curArray = arrayList; // currently processed array
 
       // Starting with 8.0 non-standard (beginning index
@@ -866,7 +867,7 @@ public class PgArray implements java.sql.Array {
           PSQLState.DATA_ERROR);
     }
 
-    List<Tuple> rows = new ArrayList<Tuple>();
+    List<Tuple> rows = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
 
     Field[] fields = new Field[2];
 

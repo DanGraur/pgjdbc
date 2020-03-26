@@ -16,6 +16,7 @@ import org.postgresql.util.GT;
 import org.postgresql.util.JdbcBlackHole;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
+import tanno.GenericTType;
 
 import java.math.BigInteger;
 import java.sql.Array;
@@ -1063,7 +1064,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
     int columns = 20;
 
     Field[] f = new Field[columns];
-    List<Tuple> v = new ArrayList<Tuple>(); // The new ResultSet tuple stuff
+    List<Tuple> v = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>(); // The new ResultSet tuple stuff
 
     f[0] = new Field("PROCEDURE_CAT", Oid.VARCHAR);
     f[1] = new Field("PROCEDURE_SCHEM", Oid.VARCHAR);
@@ -1449,7 +1450,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
   @Override
   public ResultSet getCatalogs() throws SQLException {
     Field[] f = new Field[1];
-    List<Tuple> v = new ArrayList<Tuple>();
+    List<Tuple> v = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
     f[0] = new Field("TABLE_CAT", Oid.VARCHAR);
     byte[][] tuple = new byte[1][];
     tuple[0] = connection.encodeString(connection.getCatalog());
@@ -1464,7 +1465,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
     Arrays.sort(types);
 
     Field[] f = new Field[1];
-    List<Tuple> v = new ArrayList<Tuple>();
+    List<Tuple> v = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
     f[0] = new Field("TABLE_TYPE", Oid.VARCHAR);
     for (String type : types) {
       byte[][] tuple = new byte[1][];
@@ -1479,7 +1480,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
                               String columnNamePattern) throws SQLException {
 
     int numberOfFields = 24; // JDBC4
-    List<Tuple> v = new ArrayList<Tuple>(); // The new ResultSet tuple stuff
+    List<Tuple> v = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>(); // The new ResultSet tuple stuff
     Field[] f = new Field[numberOfFields]; // The field descriptors for the new ResultSet
 
     f[0] = new Field("TABLE_CAT", Oid.VARCHAR);
@@ -1692,7 +1693,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
   public ResultSet getColumnPrivileges(String catalog, String schema, String table,
       String columnNamePattern) throws SQLException {
     Field[] f = new Field[8];
-    List<Tuple> v = new ArrayList<Tuple>();
+    List<Tuple> v = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
 
     f[0] = new Field("TABLE_CAT", Oid.VARCHAR);
     f[1] = new Field("TABLE_SCHEM", Oid.VARCHAR);
@@ -1777,7 +1778,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
   public ResultSet getTablePrivileges(String catalog, String schemaPattern,
       String tableNamePattern) throws SQLException {
     Field[] f = new Field[7];
-    List<Tuple> v = new ArrayList<Tuple>();
+    List<Tuple> v = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
 
     f[0] = new Field("TABLE_CAT", Oid.VARCHAR);
     f[1] = new Field("TABLE_SCHEM", Oid.VARCHAR);
@@ -2011,7 +2012,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
   public ResultSet getBestRowIdentifier(String catalog, String schema, String table,
       int scope, boolean nullable) throws SQLException {
     Field[] f = new Field[8];
-    List<Tuple> v = new ArrayList<Tuple>(); // The new ResultSet tuple stuff
+    List<Tuple> v = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>(); // The new ResultSet tuple stuff
 
     f[0] = new Field("SCOPE", Oid.INT2);
     f[1] = new Field("COLUMN_NAME", Oid.VARCHAR);
@@ -2078,7 +2079,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
   public ResultSet getVersionColumns(String catalog, String schema, String table)
       throws SQLException {
     Field[] f = new Field[8];
-    List<Tuple> v = new ArrayList<Tuple>(); // The new ResultSet tuple stuff
+    List<Tuple> v = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>(); // The new ResultSet tuple stuff
 
     f[0] = new Field("SCOPE", Oid.INT2);
     f[1] = new Field("COLUMN_NAME", Oid.VARCHAR);
@@ -2269,7 +2270,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
   public ResultSet getTypeInfo() throws SQLException {
 
     Field[] f = new Field[18];
-    List<Tuple> v = new ArrayList<Tuple>(); // The new ResultSet tuple stuff
+    List<Tuple> v = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>(); // The new ResultSet tuple stuff
 
     f[0] = new Field("TYPE_NAME", Oid.VARCHAR);
     f[1] = new Field("DATA_TYPE", Oid.INT2);
@@ -2695,7 +2696,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
     f[2] = new Field("DEFAULT_VALUE", Oid.VARCHAR);
     f[3] = new Field("DESCRIPTION", Oid.VARCHAR);
 
-    List<Tuple> v = new ArrayList<Tuple>();
+    List<Tuple> v = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
 
     if (connection.haveMinimumServerVersion(ServerVersion.v9_0)) {
       byte[][] tuple = new byte[4][];
@@ -2775,7 +2776,7 @@ public class PgDatabaseMetaData implements DatabaseMetaData {
     int columns = 17;
 
     Field[] f = new Field[columns];
-    List<Tuple> v = new ArrayList<Tuple>();
+    List<Tuple> v = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
 
     f[0] = new Field("FUNCTION_CAT", Oid.VARCHAR);
     f[1] = new Field("FUNCTION_SCHEM", Oid.VARCHAR);

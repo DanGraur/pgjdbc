@@ -40,6 +40,8 @@ public class SetupQueryRunner {
 
   public static Tuple run(QueryExecutor executor, String queryString,
       boolean wantResults) throws SQLException {
+    System.out.println("Running this query like it's no one's business: " + queryString + " " + wantResults);
+
     Query query = executor.createSimpleQuery(queryString);
     SimpleResultHandler handler = new SimpleResultHandler();
 

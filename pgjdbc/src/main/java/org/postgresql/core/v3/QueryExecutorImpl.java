@@ -43,6 +43,7 @@ import org.postgresql.util.PSQLException;
 import org.postgresql.util.PSQLState;
 import org.postgresql.util.PSQLWarning;
 import org.postgresql.util.ServerErrorMessage;
+import tanno.GenericTType;
 
 import java.io.IOException;
 import java.lang.ref.PhantomReference;
@@ -2139,7 +2140,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
             Field[] fields = currentQuery.getFields();
 
             if (fields != null) { // There was a resultset.
-              tuples = new ArrayList<Tuple>();
+              tuples = new @GenericTType("org.postgresql.core.Tuple") ArrayList<>();
               handler.handleResultRows(currentQuery, fields, tuples, null);
               tuples = null;
             }
@@ -2161,7 +2162,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
           if (fields != null && tuples == null) {
             // When no results expected, pretend an empty resultset was returned
             // Not sure if new ArrayList can be always replaced with emptyList
-            tuples = noResults ? Collections.<Tuple>emptyList() : new ArrayList<Tuple>();
+            tuples = noResults ? Collections.<Tuple>emptyList() : new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
           }
 
           handler.handleResultRows(currentQuery, fields, tuples, currentPortal);
@@ -2240,7 +2241,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
           if (fields != null && tuples == null) {
             // When no results expected, pretend an empty resultset was returned
             // Not sure if new ArrayList can be always replaced with emptyList
-            tuples = noResults ? Collections.<Tuple>emptyList() : new ArrayList<Tuple>();
+            tuples = noResults ? Collections.<Tuple>emptyList() : new @GenericTType("org.postgresql.core.Tuple") ArrayList<>();
           }
 
           // If we received tuples we must know the structure of the
@@ -2291,7 +2292,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
           }
           if (!noResults) {
             if (tuples == null) {
-              tuples = new ArrayList<Tuple>();
+              tuples = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
             }
             tuples.add(tuple);
           }
@@ -2355,7 +2356,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
 
         case 'T': // Row Description (response to Describe)
           Field[] fields = receiveFields();
-          tuples = new ArrayList<Tuple>();
+          tuples = new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>();
 
           SimpleQuery query = pendingDescribePortalQueue.peekFirst();
           if (!pendingExecuteQueue.isEmpty() && !pendingExecuteQueue.peekFirst().asSimple) {
@@ -2490,7 +2491,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
     handler = new ResultHandlerDelegate(delegateHandler) {
       @Override
       public void handleCommandStatus(String status, long updateCount, long insertOID) {
-        handleResultRows(portal.getQuery(), null, new ArrayList<Tuple>(), null);
+        handleResultRows(portal.getQuery(), null, new @GenericTType("org.postgresql.core.Tuple") ArrayList<Tuple>(), null);
       }
     };
 
@@ -2607,6 +2608,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
 
     LOGGER.log(Level.FINEST, " <=BE CommandStatus({0})", status);
 
+    System.out.println("Here before the crash: " + status + " " + status.getClass().getName());
     return status;
   }
 
