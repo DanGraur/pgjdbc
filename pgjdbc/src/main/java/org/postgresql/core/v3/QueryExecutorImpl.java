@@ -45,6 +45,8 @@ import org.postgresql.util.PSQLWarning;
 import org.postgresql.util.ServerErrorMessage;
 import tanno.GenericTType;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.ref.PhantomReference;
 import java.lang.ref.Reference;
@@ -2058,6 +2060,7 @@ public class QueryExecutorImpl extends QueryExecutorBase {
     // from there.
     boolean doneAfterRowDescNoData = false;
 
+    long queryProcessingTime = System.currentTimeMillis();
     while (!endQuery) {
       c = pgStream.receiveChar();
       switch (c) {
@@ -2463,8 +2466,14 @@ public class QueryExecutorImpl extends QueryExecutorBase {
         default:
           throw new IOException("Unexpected packet type: " + c);
       }
-
     }
+    queryProcessingTime = System.currentTimeMillis() - queryProcessingTime;
+
+    // Append the queryProcessingTime to the specified file
+    File file = new File("/data/projects/java/delete/pgtest/JDBC_times.txt");
+    FileWriter fr = new FileWriter(file, true);
+    fr.write(String.format("%d,", queryProcessingTime));
+    fr.close();
   }
 
   /**
